@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.demo</groupId>
+	<artifactId>helloSpring</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>helloSpring</name>
+	<description>Demo project for Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.9.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-amqp</artifactId>
+	    </dependency>
+	</dependencies>
+
+	<build>
+		<!-- 
+		Maven打包Spring boot，把依赖和配置文件及前端代码提取到jar文件外:
+		maven-jar-plugin，负责将应用程序打包成可执行的jar文件 
+		maven-assembly-plugin，负责将整个项目按照自定义的目录结构打成最终的压缩包，方便实际部署 
+		maven-compiler-plugin，负责编译项目
+		将依赖的jar提取到可运行的jar文件之外，使用maven-jar-plugin来实现
+		-->
+		<finalName>helloSpring</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+					  <manifest>
+						<!-- 指定Springboot程序启动类-->
+						<mainClass>com.example.demo.DemoApplication</mainClass>
+						<addClasspath>true</addClasspath>
+						<!-- 指定依赖的jar包相对于本程序jar的位置 跟package中的架包依赖归档目录一致-->
+						<classpathPrefix>lib/</classpathPrefix>
+					  </manifest>
+					  <manifestEntries>
+						<Class-Path>./</Class-Path>
+					  </manifestEntries>
+					</archive>
+					<excludes>
+					  <!-- 指定打包时要排除的文件,支持正则-->
+					  <exclude>application*.yml</exclude>
+					</excludes>
+			  </configuration>
+			</plugin>
+			
+			<plugin>    
+                <artifactId>maven-assembly-plugin</artifactId>    
+                <configuration>    
+                    <!-- not append assembly id in release file name -->    
+                    <appendAssemblyId>false</appendAssemblyId>    
+                    <descriptors>    
+                        <descriptor>src/main/resources/package.xml</descriptor>    
+                    </descriptors>    
+                </configuration>    
+                <executions>    
+                    <execution>    
+                        <id>make-assembly</id>    
+                        <phase>package</phase>    
+                        <goals>    
+                            <goal>single</goal>    
+                        </goals>    
+                    </execution>    
+                </executions>    
+            </plugin>
+		</plugins>
+	</build>
+
+
+</project>
